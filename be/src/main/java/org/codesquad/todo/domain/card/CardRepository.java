@@ -96,5 +96,31 @@ public class CardRepository {
 
 	private static final RowMapper<Long> ONLY_CARD_ID_ROW_MAPPER = (rs, rowNum) -> rs.getLong("id");
 
+	public int moveCardInSameColumn(Long id, Long prevId) {
+		String sql = "UPDATE card "
+			+ "SET "
+			+ "prev_card_id = :prevId "
+			+ "WHERE id = :id";
+		Map<String, Object> map = new HashMap<>();
+		map.put("id", id);
+		map.put("prevId", prevId);
+		return jdbcTemplate.update(sql, map);
+	}
+
+	public Long findIdByPrevId(Long prevId) {
+		String sql;
+		if (prevId == null) {
+			sql = "SELECT id FROM card WHERE prev_card_id is null";
+		} else {
+			sql = "SELECT id FROM card WHERE prev_card_id = :prevId";
+
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("prevId", prevId);
+
+		// return jdbcTemplate.queryForObject(sql, map, Long.class);
+		return DataAccessUtils.singleResult(jdbcTemplate.query(sql, map, ONLY_CARD_ID_ROW_MAPPER));
+	}
+
 }
 

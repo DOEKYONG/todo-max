@@ -5,8 +5,10 @@ import static org.mockito.BDDMockito.*;
 
 import org.codesquad.todo.config.ColumnNotFoundException;
 import org.codesquad.todo.config.MemberNotFoundException;
+import org.codesquad.todo.config.PrevIdNotFoundException;
 import org.codesquad.todo.domain.column.ColumnValidator;
 import org.codesquad.todo.domain.member.MemberValidator;
+import org.codesquad.todo.domain.prevId.PrevIdValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,9 @@ public class CardValidatorTest {
 
 	@Mock
 	private MemberValidator memberValidator;
+
+	@Mock
+	private PrevIdValidator prevIdValidator;
 
 	@DisplayName("카드 정보를 가지고 카드 생성을 하는 검증을 한다.")
 	@Test
@@ -65,5 +70,19 @@ public class CardValidatorTest {
 
 		// then
 		Assertions.assertThrows(ColumnNotFoundException.class, () -> cardValidator.verifyCard(card));
+	}
+
+	@DisplayName("유효한 컬럼에서 prev_Id가 존재 하지않으면 PrevIdNotFoundException 예외 발생 ")
+	@Test
+	void verifyPrevIdInColumn() {
+		// given
+		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1L, null);
+		given(columnValidator.exist(any())).willReturn(true);
+		given(prevIdValidator.verifyPrevId(any(), any())).willReturn(false);
+		// when
+		// then
+		// Assertions.assertThrows(PrevIdNotFoundException.class,
+		// 	() -> cardValidator.verifyPrevIdInColumn(card.getColumnId(),
+		// 		card.getPrevCardId())); // todo targetId 추가해서 검증하기
 	}
 }

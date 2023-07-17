@@ -27,4 +27,8 @@ public class CardReader {
 		return cardRepository.findWithChildById(cardId);
 	}
 
+	public Long findIdByPrevId(Long prevId) {
+		return cardRepository.findIdByPrevId(prevId);
+	}
+
 }
